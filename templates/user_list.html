@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pag</title>
+    <style>
+        .pages{
+            display: inline-block;
+            padding: 5px;
+            background-color: #999999;
+            margin: 5px;
+        }
+        .active{
+            display: inline-block;
+            padding: 5px;
+            background-color: greenyellow;
+            color: white;
+            margin: 5px;
+        }
+    </style>
+</head>
+<body style="text-align: center">
+    <ul>
+        {% for i in li %}
+            {% include 'li.html' %}
+        {% endfor %}
+    </ul>
+<div>
+    <a class="pages"  style="width: 50px;height:22px;" href="http://127.0.0.1:8000/user_list/?p=1">首页</a>
+
+    {% if up_one_page %}
+         <a class="pages"  style="width: 60px;height:22px;" href="http://127.0.0.1:8000/user_list/?p={{ up_one_page }}">上一页</a>
+    {% endif %}
+
+    {% for j in page_list %} {# 11页的显示 #}
+        {% if j == page %} {# 选中页码显示 #}
+            <a class="active" style="width: 25px;height:22px;" href="http://127.0.0.1:8000/user_list/?p={{ j }}">{{ j }}</a>
+        {% else %} {# 未选中页码显示 #}
+            <a class="pages"  style="width: 25px;height:22px;" href="http://127.0.0.1:8000/user_list/?p={{ j }}">{{ j }}</a>
+        {% endif %}
+    {% endfor %}
+
+    {% if down_one_page %}
+         <a class="pages"  style="width: 60px;height:22px;" href="http://127.0.0.1:8000/user_list/?p={{ down_one_page }}">下一页</a>
+    {% endif %}
+
+    <a class="pages"  style="width: 50px;height:22px;" href="http://127.0.0.1:8000/user_list/?p={{ page_max }}">尾页</a>
+    <input style="width: 50px;height:22px;" type="text" placeholder="页码"><a class="pages" style="width: 40px;height:22px;" onclick="goto(this, '/user_list/?p=');" >跳转</a>
+
+    <div>
+        <select id="pag" onchange="changPageSize(this)">
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="30">30</option>
+        </select>
+{#        <input type="submit" value="每页条数">#}
+    </div>
+    <script src="/static/jquery-1.12.4.js"></script>
+    <script src="/static/jquery.cookie.js"></script> {# 插件 #}
+    <script>
+        function goto(th, base) {
+            var val = th.previousSibling.value; {# 获取兄弟标签的值,两个标签只有在同一行才有效 #}
+            if (1<=val && val<={{ page_max }}){ {# 判断输入页码是否在合法范围内 #}
+{#                console.log(val);#}
+                location.href = base + val; {# 转到新拼接的URL #}
+            }else{
+{#                location.reload();#}
+                alert("页码输入有误！");
+            }
+        }
+    </script>
+    <script>
+        //保持每页显示条数
+        $(function (){
+        var v = $.cookie('pa_nu');
+            $('#pag').val(v);
+        });
+        //设置每页显示条数
+        function changPageSize(ths) {
+            var v = $(ths).val();
+            $.cookie('pa_nu', v, {path: '/user_list/'});
+            location.reload();
+        }
+    </script>
+</div>
+</body>
+</html>

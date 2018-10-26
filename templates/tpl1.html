@@ -1,0 +1,30 @@
+
+{% extends 'master.html' %} {# 只能继承一个模板 #}
+
+{% block title %}tpl-1{% endblock %} {# 自定义title #}
+
+{% block css %} {# 使用自己特定的css #}
+    <style>
+        body{
+            background-image: url("/static/Think_Black.jpg");
+            background-size: 1366px 720px;
+        }
+    </style>
+{% endblock %}
+
+{% block content %} {# 继承模板内的block，名称对应 #}
+    {% load tempfun %} {# 载入tempfun文件(templatetags下的py文件)，下面才可使用文件内的函数， #}
+
+    <h1 style="color: yellow">{{ name }}</h1>
+    <h2 style="color: red;">{% echo '77' %}</h2> {# 将77传入echo(simple_tag)函数，获取返回值，参数个数不限 #}
+
+    {% if name|echo_f:'is filter' %} {# echo_f(filter)的函数可作为if条件 #}
+         <h2 style="color: chartreuse;">{{ name|echo_f:' is filter' }}</h2> {# 将name变量与is filter传入echo函数，获取返回值，注意：最多传2个参数 #}
+    {% endif %}
+
+    <h1 style="color: yellow">{{ name|upper }}</h1> {# 使用'|'来使用相应方法，也可自定义simple_tag和filter函数方法 #}
+
+    {% include 'tag.html' %} {# 使用include套用html内容，可使用多个#}
+    {% include 'tag2.html' %}
+{% endblock %}
+
